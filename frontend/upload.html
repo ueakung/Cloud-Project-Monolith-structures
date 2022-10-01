@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="Upload">
+
+        <!-- <form enctype="multipart/form-data"> -->
+
+        <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+        <div class="file-upload">
+          <button class="file-upload-btn" type="button" onclick="$('.file-upload-input').trigger( 'click' )">Add Image</button>
+        
+          <div class="image-upload-wrap">
+
+            <input class="file-upload-input" id="image" type='file' onchange="readURL(this);" accept="image/*" />
+
+            <div class="drag-text">
+              <h3>Drag and drop a file or select add Image</h3>
+            </div>
+          </div>
+          <div class="file-upload-content">
+            <img class="file-upload-image" src="#" alt="your image" />
+            <div class="image-title-wrap">
+              <button type="button" onclick="removeUpload()" class="remove-image">Remove <span class="image-title">Uploaded Image</span></button>
+            </div>
+          </div>
+        </div>
+    </br>
+        <div class="text-center">
+        <button id="upload-submit" onclick="upload(image)" value="Upload" class="btn btn-primary btn-lg">Submit</button>
+    </div>
+    </div>
+
+    <!-- </form> -->
+
+    <p class="small fw-bold mt-2 pt-1 mb-0" align="right" style="padding-right: 1.5rem;" onclick="logout()"><a href="./index.html"
+        class="link-danger">login out</a></p>
+        
+    <script src="js/bootstrap.bundle.js"></script>
+    <script src="./upload.js"></script>
+
+</body>
+</html>
