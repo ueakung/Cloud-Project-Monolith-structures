@@ -1,0 +1,59 @@
+<html>
+
+<body>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <div class="g_id_signin" data-type="standard"></div>
+
+    <script>
+        window.onload = function () {
+            google.accounts.id.initialize({
+                client_id: '271205960489-v4475gtmju3ek22nn70gn00445g5peuj.apps.googleusercontent.com',
+                callback: handleCredentialResponse,
+                context: 'use',
+                prompt_parent_id: 'g_id_signin',
+                ux_mode: 'popup',
+                auto_select: false,
+            });
+            google.accounts.id.prompt();
+        };
+        //get user info
+        function handleCredentialResponse(response) {
+            console.log(response);
+            if (response.credential) {
+                var credential = response.credential;
+                var id_token = credential;
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + id_token);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onload = function () {
+                    console.log('Signed in as: ' + xhr.responseText);
+                    fetch("https://g62ukvya60.execute-api.us-east-1.amazonaws.com/users", {
+                    method: 'PUT',
+                    body: JSON.stringify({"userID": JSON.parse(xhr.responseText).email ,"data": JSON.parse(xhr.responseText) })
+                    })
+                    fetch('https://g62ukvya60.execute-api.us-east-1.amazonaws.com/users', {
+                        method: 'PUT',
+                        body: JSON.stringify({"userID": JSON.parse(xhr.responseText).email ,"data": JSON.parse(xhr.responseText) })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            localStorage.setItem("userID", JSON.parse(xhr.responseText).email )
+                            window.location.href = "./upload.html";
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
+                };
+                xhr.send('idtoken=' + id_token);
+
+                
+                //change the page with the user info
+             
+                
+
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,57 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="css/bootstrap.css">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <div class="g_id_signin" data-type="standard"></div>
 
-    <div class="login">
+  <script>
+    window.onload = function () {
+      google.accounts.id.initialize({
+        client_id: '1097843974353-a4k9tahjqbph2idcl0sh0uepupeeheas.apps.googleusercontent.com',
+        callback: handleCredentialResponse,
+        context: 'use',
+        prompt_parent_id: 'g_id_signin',
+        ux_mode: 'popup',
+        auto_select: false,
+      });
+      google.accounts.id.prompt();
+    };
+    //get user info
+    function handleCredentialResponse(response) {
+      console.log(response);
+      if (response.credential) {
+        var credential = response.credential;
+        var id_token = credential;
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=' + id_token);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function () {
+          console.log('Signed in as: ' + xhr.responseText);
+          fetch("https://bam9hcsrvk.execute-api.us-east-1.amazonaws.com/users", {
+            method: 'PUT',
+            body: JSON.stringify({ "userID": JSON.parse(xhr.responseText).email, "data": JSON.parse(xhr.responseText) })
+          })
+            .then(response => response.json())
+            .then(data => {
+              localStorage.setItem("userID", JSON.parse(xhr.responseText).email)
+              window.location.href = "./upload.html";
+            })
+            .catch((error) => {
+              console.error('Error:', error);
+            });
+        };
+        xhr.send('idtoken=' + id_token);
 
-        <section class="vh-100">
-        <div class="container-fluid h-custom">
-          <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-md-9 col-lg-6 col-xl-5">
-              <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
-                class="img-fluid" alt="Sample image">
-            </div>
-            <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-              <form>
-                <h1>login</h1></br>
 
-                <!-- Email input -->
-                <div class="form-outline mb-4">
-                  <input type="text" id="username" class="form-control form-control-lg"
-                    placeholder="Enter Username" required/>
-                </div>
+        //change the page with the user info
 
-                <!-- Password input -->
-                <div class="form-outline mb-3">
-                  <input type="password" id="password" class="form-control form-control-lg"
-                    placeholder="Enter password" required/>
-                </div>
 
-                <div class="text-center text-lg-start mt-4 pt-2">
-                  <button id="login-submit" onclick="login(username, password)" value="login in" type="button" class="btn btn-primary btn-lg"
-                    style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
 
-                  <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="./register.html"
-                      class="link-danger">Register</a></p>
-                </div>
+      }
+    }
+  </script>
+  <div class="login">
 
-              </form>
-            </div>
+    <section class="vh-100">
+      <div class="container-fluid h-custom">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col-md-9 col-lg-6 col-xl-5">
+            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
+              class="img-fluid" alt="Sample image">
+          </div>
+          <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+            <form>
+              <h1>login</h1></br>
+
+              <!-- Email input -->
+              <div class="form-outline mb-4">
+                <input type="text" id="username" class="form-control form-control-lg" placeholder="Enter Username"
+                  required />
+              </div>
+
+              <!-- Password input -->
+              <div class="form-outline mb-3">
+                <input type="password" id="password" class="form-control form-control-lg" placeholder="Enter password"
+                  required />
+              </div>
+
+              <div class="text-center text-lg-start mt-4 pt-2">
+                <button id="login-submit" onclick="login(username, password)" value="login in" type="button"
+                  class="btn btn-primary btn-lg" style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
+
+                <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="./register.html"
+                    class="link-danger">Register</a></p>
+              </div>
+
+            </form>
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
+  </div>
 
-    <script src="js/bootstrap.bundle.js"></script>
-    <script src="./login.js"></script>
+  <script src="js/bootstrap.bundle.js"></script>
+  <script src="./login.js"></script>
 
 </body>
+
 </html>

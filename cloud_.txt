@@ -1,0 +1,5 @@
+/var/www/html/Cloud-Project-Monolith-structures/frontend
+
+password : +:<8=YhPr=7(
+
+ดู EC2 SG subnet VPC

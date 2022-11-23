@@ -38,9 +38,7 @@ async function upload(file){
             formData.append("image", image);
 
             const api_url = "http://localhost:8080/upload/";
-            const res = await postapi(api_url, {
-                content: formData
-            });
+            const res = await postapi(api_url, image);
             console.log(res);
             alert("Image uploaded");
         }
@@ -49,15 +47,20 @@ async function upload(file){
 
 async function postapi(url, data) {
     console.log(data);
-    const response = await fetch(url, {
-        method: 'POST',
-        body: data.content,
-        header: {
-            'Content-Type': 'multipart/form-data'
-        }
+    const response = await fetch('https://bam9hcsrvk.execute-api.us-east-1.amazonaws.com/upload', {
+        method: 'PUT',
+        body: JSON.stringify({
+            userID:localStorage.getItem("userID"),
+            name:data.name
+        }),
     });  
     var res = await response.json();
 
+    const response2 = await fetch('https://vb8we5lg7f.execute-api.us-east-1.amazonaws.com/api/projectmicro/'+data.name, {
+        method: 'PUT',
+        body:data
+    });  
+    var res2 = await response2;
     return res
 }
 
